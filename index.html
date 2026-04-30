@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign2Text — Real-Time ASL Recognition</title>
+  <meta name="description" content="Sign2Text is a real-time American Sign Language (ASL) finger spelling recognition system achieving 98% accuracy using deep learning and computer vision." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── NAVBAR ─────────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" id="nav-logo">
+        <span class="logo-icon">✋</span>
+        <span>Sign<span class="accent">2</span>Text</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about" id="nav-about">About</a></li>
+        <li><a href="#demo" id="nav-demo">Live Demo</a></li>
+        <li><a href="#how-it-works" id="nav-how">How It Works</a></li>
+        <li><a href="#accuracy" id="nav-accuracy">Accuracy</a></li>
+        <li><a href="#alphabet" id="nav-alphabet">ASL Guide</a></li>
+      </ul>
+      <a href="#demo" class="btn-primary nav-cta" id="nav-try">Try Live</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ───────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">
+        <span class="pulse-dot"></span>
+        AI Powered · Real-Time · 98% Accuracy
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        Turn Hand Signs<br />
+        Into <span class="gradient-text">Words</span>
+      </h1>
+      <p class="hero-sub" id="hero-sub">
+        A real-time ASL fingerspelling recognition system built with deep learning. 
+        ~7,000 training images, dual-layer CNN, Hunspell autocorrect — bridging the 
+        gap between sign language and text.
+      </p>
+      <div class="hero-actions" id="hero-actions">
+        <a href="#demo" class="btn-primary btn-lg" id="hero-cta">Start Signing →</a>
+        <a href="#how-it-works" class="btn-ghost btn-lg" id="hero-learn">How It Works</a>
+      </div>
+      <div class="hero-stats" id="hero-stats">
+        <div class="stat">
+          <span class="stat-num" data-target="98">0</span><span class="stat-unit">%</span>
+          <span class="stat-label">Accuracy</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="7000">0</span><span class="stat-unit">+</span>
+          <span class="stat-label">Training Images</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="26">0</span><span class="stat-unit"></span>
+          <span class="stat-label">ASL Letters</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="2">0</span><span class="stat-unit">x</span>
+          <span class="stat-label">CNN Layers</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" id="hero-visual">
+      <div class="camera-frame" id="camera-frame">
+        <div class="cam-header">
+          <div class="cam-dot red"></div>
+          <div class="cam-dot yellow"></div>
+          <div class="cam-dot green"></div>
+          <span class="cam-label">Live Camera Feed</span>
+        </div>
+        <div class="cam-body">
+          <div class="cam-overlay-lines"></div>
+          <div class="hand-silhouette" id="hero-hand">
+            <!-- dynamic ASL hand injected by JS -->
+          </div>
+          <div class="prediction-badge" id="pred-badge">
+            <span class="pred-letter" id="pred-letter">A</span>
+            <span class="pred-conf" id="pred-conf">98.4% confident</span>
+          </div>
+          <div class="scan-line" id="scan-line"></div>
+        </div>
+        <div class="cam-footer">
+          <div class="cam-status">
+            <span class="status-dot active"></span>
+            <span>Model Active</span>
+          </div>
+          <span class="cam-fps">30 FPS</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator" id="scroll-indicator">
+      <span>Scroll to explore</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ──────────────────────────────────────────────── -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-tag">About the Project</div>
+      <h2 class="section-title">Breaking Communication Barriers<br />with AI</h2>
+      <p class="section-sub">Sign2Text is an end-to-end deep learning pipeline that translates American Sign Language (ASL) fingerspelling into readable text in real time — making communication more accessible for the hearing-impaired community.</p>
+
+      <div class="feature-grid" id="feature-grid">
+        <div class="feature-card" id="feat-1">
+          <div class="feat-icon">🧠</div>
+          <h3>Dual-Layer CNN</h3>
+          <p>TensorFlow/Keras model with two convolutional layers trained on 7,000+ custom images for robust recognition across all 26 ASL letters.</p>
+        </div>
+        <div class="feature-card" id="feat-2">
+          <div class="feat-icon">⚡</div>
+          <h3>Real-Time Processing</h3>
+          <p>OpenCV-powered video pipeline with Gaussian blur and adaptive thresholding delivers low-latency predictions at 30 frames per second.</p>
+        </div>
+        <div class="feature-card" id="feat-3">
+          <div class="feat-icon">✏️</div>
+          <h3>Hunspell Autocorrect</h3>
+          <p>Intelligent sentence formation using Hunspell dictionary integration to correct spelling errors in predicted character sequences.</p>
+        </div>
+        <div class="feature-card" id="feat-4">
+          <div class="feat-icon">🎯</div>
+          <h3>Sub-Classifiers</h3>
+          <p>Dedicated sub-classifiers resolve visually confusing sign pairs like D/R/U, boosting real-world accuracy to 98%.</p>
+        </div>
+        <div class="feature-card" id="feat-5">
+          <div class="feat-icon">📊</div>
+          <h3>Frame Validation</h3>
+          <p>Multi-frame consensus voting eliminates noisy single-frame errors and stabilizes letter predictions across video streams.</p>
+        </div>
+        <div class="feature-card" id="feat-6">
+          <div class="feat-icon">🔬</div>
+          <h3>Custom Dataset</h3>
+          <p>~7,000 images collected across all alphabets with variations in lighting, hand sizes, and orientations for maximum generalization.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LIVE DEMO ───────────────────────────────────────────── -->
+  <section class="section section-dark" id="demo">
+    <div class="container">
+      <div class="section-tag">Interactive Demo</div>
+      <h2 class="section-title">Try It Yourself</h2>
+      <p class="section-sub">Simulate the Sign2Text pipeline below. Click letters to build words, or let the auto-demo run through an example phrase.</p>
+
+      <div class="demo-layout" id="demo-layout">
+        <!-- Camera Panel -->
+        <div class="demo-camera-panel" id="demo-cam">
+          <div class="camera-frame demo-frame">
+            <div class="cam-header">
+              <div class="cam-dot red"></div>
+              <div class="cam-dot yellow"></div>
+              <div class="cam-dot green"></div>
+              <span class="cam-label">ASL Input Feed</span>
+            </div>
+            <div class="cam-body demo-cam-body">
+              <div class="demo-hand" id="demo-hand">
+                <div id="demo-hand-svg" class="demo-hand-svg"></div>
+                <div class="demo-letter-badge" id="demo-letter-display">—</div>
+              </div>
+              <div class="cam-overlay-lines"></div>
+              <div class="scan-line"></div>
+              <div class="confidence-bar-wrap">
+                <div class="conf-label">Confidence</div>
+                <div class="confidence-bar" id="conf-bar">
+                  <div class="conf-fill" id="conf-fill" style="width:0%"></div>
+                </div>
+                <div class="conf-pct" id="conf-pct">—</div>
+              </div>
+            </div>
+            <div class="cam-footer">
+              <div class="cam-status">
+                <span class="status-dot" id="demo-status-dot"></span>
+                <span id="demo-status-label">Idle</span>
+              </div>
+              <span id="frame-count">Frame: 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="demo-controls-panel" id="demo-controls">
+          <!-- Output -->
+          <div class="output-box" id="output-box">
+            <div class="output-label">Translated Text</div>
+            <div class="output-text" id="output-text"><span class="cursor-blink">|</span></div>
+            <div class="output-actions">
+              <button class="btn-icon" id="btn-clear" title="Clear text">🗑</button>
+              <button class="btn-icon" id="btn-copy" title="Copy text">📋</button>
+              <button class="btn-icon" id="btn-speak" title="Speak text">🔊</button>
+            </div>
+          </div>
+
+          <!-- Keyboard -->
+          <div class="keyboard-panel" id="keyboard-panel">
+            <div class="keyboard-label">Click a letter to sign it:</div>
+            <div class="asl-keyboard" id="asl-keyboard"></div>
+          </div>
+
+          <!-- Auto Demo Buttons -->
+          <div class="demo-buttons" id="demo-buttons">
+            <button class="btn-primary" id="btn-auto-demo">▶ Auto Demo</button>
+            <button class="btn-ghost" id="btn-stop-demo">⏹ Stop</button>
+            <button class="btn-ghost" id="btn-backspace">⌫ Backspace</button>
+            <button class="btn-ghost" id="btn-space">Space</button>
+          </div>
+
+          <!-- Autocorrect toggle -->
+          <label class="toggle-row" id="autocorrect-toggle">
+            <span>Hunspell Autocorrect</span>
+            <div class="toggle" id="toggle-ac">
+              <input type="checkbox" id="ac-checkbox" checked />
+              <span class="toggle-slider"></span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ────────────────────────────────────────── -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-tag">Architecture</div>
+      <h2 class="section-title">How Sign2Text Works</h2>
+      <p class="section-sub">A modular, multi-stage pipeline that goes from raw camera frames to autocorrected text output in milliseconds.</p>
+
+      <div class="pipeline" id="pipeline">
+        <div class="pipeline-step" id="step-1">
+          <div class="step-num">01</div>
+          <div class="step-icon">📷</div>
+          <h3>Camera Capture</h3>
+          <p>OpenCV reads real-time video frames from webcam at 30 FPS. Frames are normalized and resized to a fixed input dimension.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step" id="step-2">
+          <div class="step-num">02</div>
+          <div class="step-icon">🔧</div>
+          <h3>Preprocessing</h3>
+          <p>Gaussian blur removes noise. Adaptive thresholding creates clean binary hand masks. The ROI region is cropped and fed to the model.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step" id="step-3">
+          <div class="step-num">03</div>
+          <div class="step-icon">🤖</div>
+          <h3>CNN Inference</h3>
+          <p>A dual-layer TensorFlow/Keras CNN classifies each preprocessed frame into one of 26 letter classes with a softmax confidence score.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step" id="step-4">
+          <div class="step-num">04</div>
+          <div class="step-icon">✅</div>
+          <h3>Frame Validation</h3>
+          <p>Predictions are buffered over N frames. The dominant class across the buffer is accepted as the stable letter prediction.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step" id="step-5">
+          <div class="step-num">05</div>
+          <div class="step-icon">✏️</div>
+          <h3>Autocorrect</h3>
+          <p>Hunspell dictionary checks formed words against known spellings and suggests corrections, enabling natural sentence assembly.</p>
+        </div>
+      </div>
+
+      <!-- Sub-classifier callout -->
+      <div class="callout" id="callout-sub">
+        <div class="callout-icon">🎯</div>
+        <div>
+          <h4>Sub-Classifier for Confusable Signs</h4>
+          <p>Letters like <strong>D, R, U</strong> share similar hand shapes. Sign2Text uses dedicated sub-classifiers that activate only when the primary model's confidence falls below a threshold, resolving ambiguity with higher precision.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ACCURACY ────────────────────────────────────────────── -->
+  <section class="section section-dark" id="accuracy">
+    <div class="container">
+      <div class="section-tag">Performance</div>
+      <h2 class="section-title">Model Performance</h2>
+      <p class="section-sub">Evaluated on a held-out test set. Results show consistent accuracy across all 26 ASL letters even in challenging lighting conditions.</p>
+
+      <div class="metrics-grid" id="metrics-grid">
+        <div class="metric-card main-metric" id="metric-main">
+          <div class="metric-ring" id="metric-ring">
+            <svg viewBox="0 0 120 120" class="ring-svg">
+              <circle cx="60" cy="60" r="50" class="ring-bg"/>
+              <circle cx="60" cy="60" r="50" class="ring-fill" id="ring-fill" stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="ring-center">
+              <span class="ring-num" id="ring-num">0</span><span class="ring-pct">%</span>
+            </div>
+          </div>
+          <h3>Overall Accuracy</h3>
+          <p>Primary CNN classifier on full 26-class ASL alphabet</p>
+        </div>
+        <div class="perf-bars" id="perf-bars">
+          <div class="perf-row">
+            <span class="perf-label">Training Accuracy</span>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" data-width="99.2" style="width:0%"></div>
+            </div>
+            <span class="perf-val">99.2%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Validation Accuracy</span>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" data-width="98.4" style="width:0%"></div>
+            </div>
+            <span class="perf-val">98.4%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Test Accuracy</span>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" data-width="98.0" style="width:0%"></div>
+            </div>
+            <span class="perf-val">98.0%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Sub-Classifier (D/R/U)</span>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" data-width="97.5" style="width:0%"></div>
+            </div>
+            <span class="perf-val">97.5%</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Autocorrect Word Hit Rate</span>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" data-width="94.0" style="width:0%"></div>
+            </div>
+            <span class="perf-val">94.0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="tech-stack" id="tech-stack">
+        <div class="tech-label">Tech Stack</div>
+        <div class="tech-pills">
+          <span class="tech-pill">Python</span>
+          <span class="tech-pill">TensorFlow</span>
+          <span class="tech-pill">Keras</span>
+          <span class="tech-pill">OpenCV</span>
+          <span class="tech-pill">NumPy</span>
+          <span class="tech-pill">Hunspell</span>
+          <span class="tech-pill">CNN</span>
+          <span class="tech-pill">Gaussian Blur</span>
+          <span class="tech-pill">Thresholding</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ASL ALPHABET ────────────────────────────────────────── -->
+  <section class="section" id="alphabet">
+    <div class="container">
+      <div class="section-tag">Reference Guide</div>
+      <h2 class="section-title">ASL Fingerspelling Alphabet</h2>
+      <p class="section-sub">All 26 letters that Sign2Text can recognize in real time. Hover each card to see the hand description.</p>
+
+      <div class="alphabet-grid" id="alphabet-grid"></div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-icon">✋</span>
+          <span class="footer-name">Sign<span class="accent">2</span>Text</span>
+        </div>
+        <p class="footer-desc">Real-time ASL fingerspelling recognition using computer vision and deep learning. Built to make communication more inclusive.</p>
+        <a href="https://github.com/Jangir-Gautam/Sign2Text" target="_blank" class="btn-ghost" id="footer-github">
+          View on GitHub ↗
+        </a>
+      </div>
+      <div class="footer-bottom">
+        <span>Built with TensorFlow · OpenCV · Hunspell</span>
+        <span>© 2024 Sign2Text · Jangir-Gautam</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
