@@ -44,7 +44,7 @@
     <div class="hero-content">
       <div class="hero-badge" id="hero-badge">
         <span class="pulse-dot"></span>
-        AI Powered · Real-Time · 98% Accuracy
+        Real-Time · 98% Accuracy
       </div>
       <h1 class="hero-title" id="hero-title">
         Turn Hand Signs<br />
@@ -396,6 +396,23 @@
           View on GitHub ↗
         </a>
       </div>
+      
+      <!-- MINDMAP -->
+      <div class="mindmap-container">
+        <div class="mindmap-title">How It Works (System Architecture)</div>
+        <div class="mindmap">
+          <div class="mm-node">📷 Camera Feed</div>
+          <div class="mm-arrow">→</div>
+          <div class="mm-node">🔧 Preprocessing<br><span style="font-size:11px;font-weight:400;opacity:0.7">Blur & Threshold</span></div>
+          <div class="mm-arrow">→</div>
+          <div class="mm-node">🧠 Dual-Layer CNN<br><span style="font-size:11px;font-weight:400;opacity:0.7">Inference</span></div>
+          <div class="mm-arrow">→</div>
+          <div class="mm-node">✅ Frame Validation<br><span style="font-size:11px;font-weight:400;opacity:0.7">Consensus Buffer</span></div>
+          <div class="mm-arrow">→</div>
+          <div class="mm-node">✏️ Autocorrect<br><span style="font-size:11px;font-weight:400;opacity:0.7">Hunspell Output</span></div>
+        </div>
+      </div>
+
       <div class="footer-bottom">
         <span>Built with TensorFlow · OpenCV · Hunspell</span>
         <span>© 2024 Sign2Text · Jangir-Gautam</span>

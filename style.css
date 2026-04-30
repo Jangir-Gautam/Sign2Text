@@ -515,6 +515,75 @@ a { text-decoration: none; color: inherit; }
   font-size: 13px; color: var(--muted);
 }
 
+/* ── MINDMAP ────────────────────────────────────── */
+.mindmap-container {
+  margin: 48px 0;
+  padding: 32px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+.mindmap-title {
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+.mindmap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.mm-node {
+  background: rgba(168,85,247,.08);
+  border: 1px solid rgba(168,85,247,.3);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e9d5ff;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  min-width: 120px;
+  animation: pulse-node 3s infinite;
+}
+.mm-node:nth-child(3) { animation-delay: 0.5s; }
+.mm-node:nth-child(5) { animation-delay: 1s; }
+.mm-node:nth-child(7) { animation-delay: 1.5s; }
+.mm-node:nth-child(9) { animation-delay: 2s; }
+
+.mm-arrow {
+  color: var(--purple);
+  font-size: 20px;
+  animation: slide-arrow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-node {
+  0% { box-shadow: 0 0 0 0 rgba(168,85,247,0.3); }
+  70% { box-shadow: 0 0 0 12px rgba(168,85,247,0); }
+  100% { box-shadow: 0 0 0 0 rgba(168,85,247,0); }
+}
+@keyframes slide-arrow {
+  0%, 100% { transform: translateX(-4px); opacity: 0.5; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .mindmap { flex-direction: column; gap: 8px; }
+  .mm-arrow { transform: rotate(90deg); animation: slide-arrow-down 2s infinite ease-in-out; }
+}
+@keyframes slide-arrow-down {
+  0%, 100% { transform: translateY(-4px) rotate(90deg); opacity: 0.5; }
+  50% { transform: translateY(4px) rotate(90deg); opacity: 1; }
+}
+
 /* ── RESPONSIVE ─────────────────────────────────── */
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; padding: 100px 24px 80px; text-align: center; }
