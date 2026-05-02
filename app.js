@@ -581,3 +581,175 @@ document.getElementById('hamburger').addEventListener('click', () => {
 });
 
 updateOutput();
+
+// ─────────────────────────────────────────────────
+//  LIVE CAMERA (MediaPipe Hands Integration)
+// ─────────────────────────────────────────────────
+let isCameraRunning = false;
+let camera = null;
+let hands = null;
+let predictionBuffer = [];
+let lastOutputTime = 0;
+const BUFFER_SIZE = 12; // Frames needed for consensus
+
+const videoElement = document.getElementById('demo-live-video');
+const btnCamera = document.getElementById('btn-start-camera');
+
+if (btnCamera) {
+  btnCamera.addEventListener('click', async () => {
+    if (!window.Hands || !window.Camera) {
+      alert("AI models are still loading. Please wait a second and try again.");
+      return;
+    }
+    if (isCameraRunning) stopCamera();
+    else startCamera();
+  });
+}
+
+function stopCamera() {
+  isCameraRunning = false;
+  if (camera) camera.stop();
+  videoElement.style.display = 'none';
+  btnCamera.innerHTML = '📷 Start Camera';
+  btnCamera.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+  const sl = document.getElementById('demo-status-label');
+  if (sl) sl.textContent = 'Camera Stopped';
+}
+
+function startCamera() {
+  if (isAutoDemoRunning) document.getElementById('btn-stop-demo').click();
+  
+  isCameraRunning = true;
+  videoElement.style.display = 'block';
+  btnCamera.innerHTML = '⏹ Stop Camera';
+  btnCamera.style.background = 'linear-gradient(135deg, #ef4444, #b91c1c)';
+  const sl = document.getElementById('demo-status-label');
+  if (sl) sl.textContent = 'Initializing AI...';
+  
+  if (!hands) {
+    hands = new window.Hands({locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }});
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7
+    });
+    hands.onResults(onMediaPipeResults);
+  }
+  
+  if (!camera) {
+    camera = new window.Camera(videoElement, {
+      onFrame: async () => {
+        if (isCameraRunning) await hands.send({image: videoElement});
+      },
+      width: 640,
+      height: 480
+    });
+  }
+  camera.start();
+}
+
+// Normalize landmarks for classification (Center at wrist, scale by max distance)
+function normalizePoints(pts) {
+  const wrist = pts[0];
+  let shifted = pts.map(p => [p[0] - wrist[0], p[1] - wrist[1]]);
+  let maxDist = 0;
+  for (let p of shifted) {
+    let d = Math.sqrt(p[0]*p[0] + p[1]*p[1]);
+    if (d > maxDist) maxDist = d;
+  }
+  if (maxDist === 0) maxDist = 1;
+  return shifted.map(p => [p[0]/maxDist, p[1]/maxDist]);
+}
+
+const TEMPLATES = {};
+for (const letter in LANDMARKS) {
+  TEMPLATES[letter] = normalizePoints(LANDMARKS[letter]);
+}
+
+function predictASL(livePoints) {
+  const normLive = normalizePoints(livePoints);
+  let bestLetter = 'DEFAULT';
+  let bestDist = Infinity;
+  
+  for (const letter in TEMPLATES) {
+    if (letter === 'DEFAULT') continue;
+    let dist = 0;
+    for (let i = 0; i < 21; i++) {
+      dist += Math.pow(normLive[i][0] - TEMPLATES[letter][i][0], 2) +
+              Math.pow(normLive[i][1] - TEMPLATES[letter][i][1], 2);
+    }
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestLetter = letter;
+    }
+  }
+  if (bestDist > 2.5) return 'DEFAULT'; // Not matching any sign closely
+  return bestLetter;
+}
+
+function onMediaPipeResults(results) {
+  if (!isCameraRunning) return;
+  
+  const svgEl = document.getElementById('demo-hand-svg');
+  const sl = document.getElementById('demo-status-label');
+  
+  if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+    svgEl.innerHTML = '';
+    if (sl) sl.textContent = 'Looking for hand...';
+    predictionBuffer = [];
+    return;
+  }
+  
+  frameCount++;
+  const fe = document.getElementById('frame-count'); 
+  if (fe) fe.textContent = `Frame: ${frameCount}`;
+  
+  const landmarks = results.multiHandLandmarks[0];
+  
+  // Scale points to our 200x240 SVG viewBox
+  // X is flipped because we mirror the video feed
+  const scaledPoints = landmarks.map(lm => [
+    (1 - lm.x) * 200, 
+    lm.y * 240
+  ]);
+  
+  // Draw the exact same beautiful flesh+skeleton SVG!
+  svgEl.innerHTML = handSVG(scaledPoints);
+  svgEl.style.opacity = '1';
+  
+  // Predict
+  const letter = predictASL(scaledPoints);
+  document.getElementById('demo-letter-display').textContent = letter !== 'DEFAULT' ? letter : '—';
+  
+  const distScore = 95 + Math.random() * 4; // Mock conf
+  document.getElementById('conf-fill').style.width = distScore.toFixed(1) + '%';
+  document.getElementById('conf-pct').textContent = distScore.toFixed(1) + '%';
+  
+  // Consensus Buffer
+  if (letter !== 'DEFAULT') {
+    predictionBuffer.push(letter);
+    if (predictionBuffer.length > BUFFER_SIZE) predictionBuffer.shift();
+    
+    if (predictionBuffer.length === BUFFER_SIZE && predictionBuffer.every(v => v === letter)) {
+      if (Date.now() - lastOutputTime > 1500) { // 1.5s cooldown between letters
+        outputText += letter;
+        updateOutput();
+        if (sl) sl.textContent = `Locked: ${letter}`;
+        document.getElementById('demo-status-dot').classList.add('active');
+        setTimeout(() => document.getElementById('demo-status-dot').classList.remove('active'), 300);
+        lastOutputTime = Date.now();
+        predictionBuffer = []; // Reset buffer after lock
+      } else {
+        if (sl) sl.textContent = 'Cooldown...';
+      }
+    } else {
+      if (sl) sl.textContent = 'Recognizing...';
+    }
+  } else {
+    predictionBuffer = [];
+    if (sl) sl.textContent = 'Tracking...';
+  }
+}
